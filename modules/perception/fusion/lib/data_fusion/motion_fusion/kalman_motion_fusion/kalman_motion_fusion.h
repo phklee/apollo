@@ -27,8 +27,9 @@ namespace perception {
 namespace fusion {
 
 class KalmanMotionFusion : public BaseMotionFusion {
+  // NOTES(lsq): 通过在类中添加 EIGEN_MAKE_ALIGNED_OPERATOR_NEW 宏，该类将自动具有对齐内存的能力，并满足 Eigen 库对内存对齐的要求。
  public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW  // NOTES(lsq): 是一个宏定义，用于在使用 Eigen 库时为类重载 operator new 和 operator delete，以确保内存对齐。
 
  public:
   explicit KalmanMotionFusion(TrackPtr track) : BaseMotionFusion(track) {}
@@ -38,7 +39,8 @@ class KalmanMotionFusion : public BaseMotionFusion {
   KalmanMotionFusion& operator=(const KalmanMotionFusion&) = delete;
 
   // @brief init kalman filter and some magic number
-  bool Init() override;
+  bool Init() override;  // NOTES(lsq): 通过使用 override 关键字，可以确保当前类中的 Init 函数是对基类中同名虚函数的重写。
+                         // 这意味着当通过基类指针或引用调用 Init 函数时，会调用当前类中的实现，而不是基类中的实现。
 
   // @brief update the tracker with current measurement
   // @params[IN] measurement: sensor results

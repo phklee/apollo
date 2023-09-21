@@ -28,10 +28,12 @@ namespace fusion {
 
 class BaseMotionFusion {
  public:
-  explicit BaseMotionFusion(TrackPtr track) : track_ref_(track) {}
-  virtual ~BaseMotionFusion() {}
-  BaseMotionFusion(const BaseMotionFusion&) = delete;
-  BaseMotionFusion& operator=(const BaseMotionFusion&) = delete;
+  explicit BaseMotionFusion(TrackPtr track) : track_ref_(track) {}  // NOTES(lsq): 它使用了 explicit 关键字，表示该构造函数是显式的，即不能通过隐式转换来调用。
+  virtual ~BaseMotionFusion() {}   // NOTES(lsq): 虚析构函数在处理继承关系时很有用，确保在删除派生类对象时，析构函数按照正确的顺序被调用。
+  BaseMotionFusion(const BaseMotionFusion&) = delete;     // NOTES(lsq): 使用 delete 关键字可以禁用默认生成的拷贝构造函数，阻止对象的拷贝操作。
+                                                          // 在这个类中，拷贝构造函数被删除，意味着不能对该类的对象进行拷贝
+  BaseMotionFusion& operator=(const BaseMotionFusion&) = delete;  // NOTES(lsq): 通过使用 delete 关键字禁用赋值运算符重载，阻止对象的赋值操作。 
+                                                                  // 在这个类中，赋值运算符被删除，意味着不能对该类的对象进行赋值
 
   virtual bool Init() = 0;
 

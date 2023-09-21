@@ -5,6 +5,7 @@ Language:                               Cpp
 Cpp11BracedListStyle:                   true
 Standard:                               Cpp11
 CommentPragmas:                         '^ NOLINT'
+ColumnLimit: 120
 # Mimic cpplint style
 IncludeCategories:
   # Note that the "main" header is priority 0

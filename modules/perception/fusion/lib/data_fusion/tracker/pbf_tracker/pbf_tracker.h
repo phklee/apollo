@@ -62,6 +62,13 @@ class PbfTracker : public BaseTracker {
   static std::string s_shape_fusion_method_;
   static std::string s_existence_fusion_method_;
 
+  /* NOTES(lsq) */
+  // std::unique_ptr 用于管理动态分配的对象的所有权，并在不再需要时自动释放相关资源。
+  // 使用 std::unique_ptr 的好处是，它负责自动释放所拥有的对象的内存，无需手动调用 delete。
+  // 当 motion_fusion_ 不再需要时，它会自动释放所持有对象的内存
+  // 需要注意的是，由于 std::unique_ptr 是独占所有权的智能指针，即不能进行拷贝操作，只能进行移动语义，
+  // 因此在使用 std::unique_ptr 时需要谨慎考虑所有权的转移和生命周期管理。
+  /* NOTES(lsq) */
   std::unique_ptr<BaseTypeFusion> type_fusion_ = nullptr;
   std::unique_ptr<BaseMotionFusion> motion_fusion_ = nullptr;
   std::unique_ptr<BaseExistenceFusion> existence_fusion_ = nullptr;

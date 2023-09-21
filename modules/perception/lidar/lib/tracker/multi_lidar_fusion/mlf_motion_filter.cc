@@ -150,7 +150,7 @@ void MlfMotionFilter::KalmanFilterUpdateWithPartialObservation(
   if (time_diff < EPSION_TIME) {  // Very small time than assign
     time_diff = DEFAULT_FPS;
   }
-  Eigen::Matrix4d transition = Eigen::Matrix4d::Identity();
+  Eigen::Matrix4d transition = Eigen::Matrix4d::Identity();  // 初始化该矩阵为单位矩阵
   transition(0, 2) = transition(1, 3) = time_diff;
 
   // composition with rotation
@@ -158,15 +158,15 @@ void MlfMotionFilter::KalmanFilterUpdateWithPartialObservation(
       range < trust_orientation_range_) {
     Eigen::Vector2d cur_dir = new_object->direction.head<2>();
     Eigen::Vector2d pre_dir = latest_object->direction.head<2>();
-    cur_dir.normalize();
+    cur_dir.normalize(); // 归一化，将向量的模长缩放到单位长度的过程
     pre_dir.normalize();
-    double cos_theta = cur_dir.dot(pre_dir);
+    double cos_theta = cur_dir.dot(pre_dir); // 点积
     double sin_theta = pre_dir(0) * cur_dir(1) - pre_dir(1) * cur_dir(0);
     Eigen::Matrix2d rot;
     rot << cos_theta, -sin_theta, sin_theta, cos_theta;
     Eigen::Matrix4d rot_extend = Eigen::Matrix4d::Zero();
-    rot_extend.block<2, 2>(0, 0) = rot;
-    rot_extend.block<2, 2>(2, 2) = rot;
+    rot_extend.block<2, 2>(0, 0) = rot; // 从矩阵rot_extend的左上角开始提取一个大小为2x2的子块。然后，将子块赋值为rot。
+    rot_extend.block<2, 2>(2, 2) = rot; // 从矩阵rot_extend的第三行第三列开始提取一个大小为2x2的子块。然后，将子块赋值为rot。
     transition = rot_extend * transition;
   }
 

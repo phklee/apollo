@@ -57,7 +57,12 @@ class BaseFusionSystem {
   std::string main_sensor_;
 };
 
-PERCEPTION_REGISTER_REGISTERER(BaseFusionSystem);
+PERCEPTION_REGISTER_REGISTERER(BaseFusionSystem);   // NOTES(lsq): PERCEPTION_REGISTER_REGISTERER(BaseFusionSystem) 这是一个宏定义，用于注册一个注册器类，
+                                                    // 将其与基类 BaseFusionSystem 相关联。通常，注册器类用于自动识别和注册其他类。通过调用 PERCEPTION_REGISTER_REGISTERER 宏，
+                                                    // 并将基类作为参数，可以将注册器类与基类关联起来，以便在运行时能够自动识别和创建派生类的对象。
+
+// NOTES(lsq): FUSION_REGISTER_FUSIONSYSTEM(name) 这是另一个宏定义，用于注册一个具体的类 name，使其能够被自动识别和创建。在这个宏定义中，name 是具体类的名称，通常是派生自 BaseFusionSystem 的类名。
+// 通过调用 FUSION_REGISTER_FUSIONSYSTEM 宏，可以将具体的类与基类 BaseFusionSystem 关联起来，以便在运行时能够自动识别和创建该类的对象。
 #define FUSION_REGISTER_FUSIONSYSTEM(name) \
   PERCEPTION_REGISTER_CLASS(BaseFusionSystem, name)
 

@@ -114,7 +114,7 @@ bool ProbabilisticFusion::Fuse(const FusionOptions& options,
   }
 
   auto* sensor_data_manager = SensorDataManager::Instance();
-  // 1. save frame data
+  // 1. save frame data 保存新增的数据
   {
     std::lock_guard<std::mutex> data_lock(data_mutex_);
     if (!params_.use_lidar && sensor_data_manager->IsLidar(sensor_frame)) {
@@ -139,19 +139,19 @@ bool ProbabilisticFusion::Fuse(const FusionOptions& options,
     }
   }
 
-  // 2. query related sensor_frames for fusion
+  // 2. query related sensor_frames for fusion 提取要参与融合的历史数据
   std::lock_guard<std::mutex> fuse_lock(fuse_mutex_);
   double fusion_time = sensor_frame->timestamp;
   std::vector<SensorFramePtr> frames;
   sensor_data_manager->GetLatestFrames(fusion_time, &frames);
   AINFO << "Get " << frames.size() << " related frames for fusion";
 
-  // 3. perform fusion on related frames
+  // 3. perform fusion on related frames 执行融合操作
   for (const auto& frame : frames) {
     FuseFrame(frame);
   }
 
-  // 4. collect fused objects
+  // 4. collect fused objects 整理融合后的目标
   CollectFusedObjects(fusion_time, fused_objects);
   return true;
 }
@@ -213,7 +213,7 @@ void ProbabilisticFusion::UpdateAssignedTracks(
   for (size_t i = 0; i < assignments.size(); ++i) {
     size_t track_ind = assignments[i].first;
     size_t obj_ind = assignments[i].second;
-    trackers_[track_ind]->UpdateWithMeasurement(
+    trackers_[track_ind]->UpdateWithMeasurement(   // pdf_tracker
         options, frame->GetForegroundObjects()[obj_ind], frame->GetTimestamp());
   }
 }

@@ -71,28 +71,35 @@ bool PbfTracker::InitParams() {
 
 bool PbfTracker::InitMethods() {
   if (s_type_fusion_method_ == "DstTypeFusion") {
-    type_fusion_.reset(new DstTypeFusion(track_));
+    type_fusion_.reset(new DstTypeFusion(track_));  // base_type_fusion: TrackPtr track_
   } else {
     AERROR << "Unknown type fusion : " << s_type_fusion_method_;
     return false;
   }
 
   if (s_motion_fusion_method_ == "KalmanMotionFusion") {
-    motion_fusion_.reset(new KalmanMotionFusion(track_));
+    /* NOTES(lsq) */
+    // new KalmanMotionFusion(track_) 创建一个新的 KalmanMotionFusion 对象
+    // 目的是重新为 motion_fusion_ 指针对象分配内存，并将其指向一个新创建的 KalmanMotionFusion 对象。
+    // 通过调用 reset 函数，可以在保留原有指针的情况下，重新初始化指针的值，从而实现对象的替换或重新创建。
+    // 需要注意的是，这种用法假设 motion_fusion_ 已经是一个指针对象，而且在调用 reset 之前，可能已经分配了内存或指向了其他对象。
+    // 通过调用 reset 函数，旧的内存将被释放，而 motion_fusion_ 将指向新创建的 KalmanMotionFusion 对象。
+    /* NOTES(lsq) */
+    motion_fusion_.reset(new KalmanMotionFusion(track_));  // NOTES(lsq): base_motion_fusion: TrackPtr track_
   } else {
     AERROR << "Unknown motion fusion : " << s_motion_fusion_method_;
     return false;
   }
 
   if (s_existence_fusion_method_ == "DstExistenceFusion") {
-    existence_fusion_.reset(new DstExistenceFusion(track_));
+    existence_fusion_.reset(new DstExistenceFusion(track_));  // NOTES(lsq): base_existence_fusion: TrackPtr track_
   } else {
     AERROR << "Unknown existence fusion : " << s_existence_fusion_method_;
     return false;
   }
 
   if (s_shape_fusion_method_ == "PbfShapeFusion") {
-    shape_fusion_.reset(new PbfShapeFusion(track_));
+    shape_fusion_.reset(new PbfShapeFusion(track_));  // NOTES(lsq): base_shape_fusion: TrackPtr track_
   } else {
     AERROR << "Unknown shape fusion : " << s_shape_fusion_method_;
     return false;
@@ -117,11 +124,11 @@ void PbfTracker::UpdateWithMeasurement(const TrackerOptions& options,
   ADEBUG << "fusion_updating..." << track_->GetTrackId() << " with "
          << sensor_id << "..." << measurement->GetBaseObject()->track_id << "@"
          << FORMAT_TIMESTAMP(measurement->GetTimestamp());
-  existence_fusion_->UpdateWithMeasurement(measurement, target_timestamp,
+  existence_fusion_->UpdateWithMeasurement(measurement, target_timestamp,   // NOTES(lsq): DstExistenceFusion(base_existence_fusion): dst_existence_fusion
                                            options.match_distance);
-  motion_fusion_->UpdateWithMeasurement(measurement, target_timestamp);
-  shape_fusion_->UpdateWithMeasurement(measurement, target_timestamp);
-  type_fusion_->UpdateWithMeasurement(measurement, target_timestamp);
+  motion_fusion_->UpdateWithMeasurement(measurement, target_timestamp);     // NOTES(lsq): KalmanMotionFusion(base_shape_fusion): kalman_motion_fusion
+  shape_fusion_->UpdateWithMeasurement(measurement, target_timestamp);      // NOTES(lsq): PbfShapeFusion(base_shape_fusion): pdf_shape_fusion
+  type_fusion_->UpdateWithMeasurement(measurement, target_timestamp);       // NOTES(lsq): DstTypeFusion(base_type_fusion): dst_type_fusion
   track_->UpdateWithSensorObject(measurement);
 }
 
