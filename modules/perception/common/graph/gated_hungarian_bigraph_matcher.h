@@ -141,25 +141,32 @@ void GatedHungarianMatcher<T>::Match(
   CHECK_NOTNULL(unassigned_cols);
 
   /* initialize matcher */
-  cost_thresh_ = cost_thresh;
+  cost_thresh_ = cost_thresh; // =4
   opt_flag_ = opt_flag;
-  bound_value_ = bound_value;
+  bound_value_ = bound_value; // =100
   assignments_ptr_ = assignments;
+
+  // 初始化is_valid_cost_函数，object和tracker的欧氏距离小于4米有效
   MatchInit();
 
   /* compute components */
   std::vector<std::vector<size_t>> row_components;
   std::vector<std::vector<size_t>> col_components;
+
+  //计算二分图的连通子图，即匈牙利的增广路.row放入对应的col，col放入对应的row
+  //row/col_components的size都是一样的，
   this->ComputeConnectedComponents(&row_components, &col_components);
   CHECK_EQ(row_components.size(), col_components.size());
 
   /* compute assignments */
   assignments_ptr_->clear();
   assignments_ptr_->reserve(std::max(rows_num_, cols_num_));
+  //对连通子图分别进行匈牙利匹配 最小距离
   for (size_t i = 0; i < row_components.size(); ++i) {
     this->OptimizeConnectedComponent(row_components[i], col_components[i]);
   }
 
+  //生成未分配的
   this->GenerateUnassignedData(unassigned_rows, unassigned_cols);
 }
 
