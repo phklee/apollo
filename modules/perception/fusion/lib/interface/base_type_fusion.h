@@ -28,10 +28,10 @@ namespace fusion {
 
 class BaseTypeFusion {
  public:
-  explicit BaseTypeFusion(TrackPtr track) : track_ref_(track) {}
-  virtual ~BaseTypeFusion() {}
-  BaseTypeFusion(const BaseTypeFusion&) = delete;
-  BaseTypeFusion& operator=(const BaseTypeFusion&) = delete;
+  explicit BaseTypeFusion(TrackPtr track) : track_ref_(track) {}   // 显式构造函数，并且不允许隐式类型转换
+  virtual ~BaseTypeFusion() {}                                     // 表示这是一个虚析构函数，通常在你希望通过基类指针来删除派生类对象时使用
+  BaseTypeFusion(const BaseTypeFusion&) = delete;                  // 禁用拷贝构造函数，即阻止对象的拷贝构造
+  BaseTypeFusion& operator=(const BaseTypeFusion&) = delete;       // 禁用拷贝赋值运算符，阻止对象的拷贝赋值
 
   static bool Init();
 
